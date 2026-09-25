@@ -1,0 +1,45 @@
+resources:
+  jobs:
+    stepright_orchestration_job:
+      name: stepright_orchestration_job
+      tags:
+        environment: ${bundle.target}
+      
+      parameters:
+        - name: run_date
+          default: "{{job.start_time.iso_date}}"
+      
+      tasks:
+        - task_key: Run_ingestion
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.stepright-ingestion-pipeline.id}
+        
+        - task_key: DQ_Check
+          depends_on:
+            - task_key: Run_ingestion
+          notebook_task:
+            notebook_path: ../../jobs/dq_check.py
+            base_parameters:
+              catalog: ${var.stepright_catalog}            
+        
+        - task_key: Run_transformation
+          depends_on:
+            - task_key: DQ_Check
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.stepright-transformation-pipeline.id}
+        
+        - task_key: Report
+          depends_on:
+            - task_key: Run_transformation
+          spark_python_task:
+            python_file: ../../jobs/report.py
+            parameters:
+              - "--catalog=${var.stepright_catalog}"
+              - "--run_date={{job.parameters.run_date}}"
+          environment_key: Default
+      
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED

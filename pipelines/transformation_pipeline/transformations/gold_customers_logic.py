@@ -1,9 +1,11 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, sum as _sum, count, max as _max, datediff, current_date, to_date
+from datetime import date
+from pyspark.sql.functions import col, sum as _sum, count, max as _max, datediff, current_date, to_date,lit
 
 def compute_customer_360(
  customers_df:DataFrame,
- orders_df:DataFrame   
+ orders_df:DataFrame,
+ as_of_date: date
 ) -> DataFrame:
     customers_current = customers_df.filter(col("__END_AT").isNull())
     orders_current = orders_df.filter(col("__END_AT").isNull())
@@ -23,7 +25,7 @@ def compute_customer_360(
         .join(order_summary,"customer_id","left")
         .withColumn(
             "days_since_last_order",
-            datediff(current_date(), to_date(col("last_order_date")))
+            datediff(lit(as_of_date), to_date(col("last_order_date")))
         )
         .select(
             "customer_id", "first_name", "last_name", "loyalty_tier",

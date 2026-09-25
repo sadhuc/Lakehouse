@@ -1,0 +1,8 @@
+resources:
+  dashboards:
+    dq_dashboard:
+      display_name: "DQ Dashboard"
+      file_path: ../../monitoring/Data Quality Monitoring.lvdash.json
+      warehouse_id: ${var.stepright_warehouse_id}
+      dataset_catalog: ${var.stepright_catalog}
+      dataset_schema: stepright
