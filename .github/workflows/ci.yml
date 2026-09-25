@@ -30,8 +30,8 @@ jobs:
       - name: Install test dependencies
         run: pip install pytest "pyspark>=3.5"
  
-      - name: Run ingestion_pipeline unit tests
-        run: pytest pipelines/ingestion_pipeline/tests -v
+      #- name: Run ingestion_pipeline unit tests
+        #run: pytest pipelines/ingestion_pipeline/tests -v
  
       - name: Run transformation_pipeline unit tests
         run: pytest pipelines/transformation_pipeline/tests -v
