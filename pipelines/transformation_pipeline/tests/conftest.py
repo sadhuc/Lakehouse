@@ -12,7 +12,7 @@ def local_spark():
     active = SparkSession.getActiveSession()
     if active is not None:
         yield active
-    return
+        return
 
     spark = (
         SparkSession.builder
