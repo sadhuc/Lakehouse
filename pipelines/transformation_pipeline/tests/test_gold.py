@@ -181,7 +181,7 @@ def test_funnel_analysis_counts_anonymous_sessions(local_spark):
     expected = local_spark.createDataFrame(
         [
          ("affiliate", 1, 1, 1.0),
-         ("google", 1, 0, 0),
+         ("google", 1, 0, 0.0),
          ("direct", 1, 1, 1.0)
         ],
         schema="referrer string,total_sessions long,converted_sessions long,conversion_rate double"
